@@ -1,3 +1,5 @@
+import copy
+
 #function HammingG
 #input: a number r
 #output: G, the generator matrix of the (2^r-1,2^r-r-1) Hamming code
@@ -125,11 +127,11 @@ def hammingDecoder(v):
     H = parityCheckMatrixGenerator(r)
 
     
-    c=v
+    c=copy.deepcopy(v)
+    i=0
     
     while True: #method 2 - local search
         z=[]
-        i=0
         for j in range(0,r):
             t=0
             for k in range(0,L):
@@ -137,10 +139,10 @@ def hammingDecoder(v):
             z.append(t%2)
         if sum(z) == 0:
             break
-        elif i == L:
-            return
+        elif i >= L:
+            return []
         else:
-            c=v
+            c=copy.deepcopy(v)
             c[i] = (c[i] + 1) % 2
         i+=1
 

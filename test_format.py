@@ -105,4 +105,5 @@ for i in range(7):
 myTotalMarks        = sum(myMarks)
 totalMarksString    = '\nTOTAL = ' + str(myTotalMarks) + ' MARKS'
 outfile.write(totalMarksString)
+outfile.close()
 
