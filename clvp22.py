@@ -74,7 +74,34 @@ def hammingEncoder(m):
         if 2**r-r-1 > L:
             return c
     G = hammingGeneratorMatrix(r)
-    return G
+    for j in range(0,2**r-1):
+        t=0
+        for i in range(0,L):
+            t += G[i][j]*m[i]
+        c.append(t%2)
+
+    return c
+
+
+def repetitionEncoder(m,n):
+    if type(m) != list:
+        return
+    if type(n) != int:
+        return
+    if len(m) != 1:
+        return
+    return m*n
+
+def repetitionDecoder(v):
+    k = sum(v)
+    P = (len(v)+1) //2
+    if k < P:
+        return [0]
+    elif k > P:
+        return [1]
+    else:
+        return []
+            
 
     
     
