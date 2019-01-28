@@ -48,6 +48,28 @@ def decimalToVector(n,r):
         n //= 2
     return v
 
+#function parityCheckMatrixGenerator
+#input: r
+#output: H, a matrix with dimensions 2^r-1,r for checking codewords
+def parityCheckMatrixGenerator(r):
+    H =[]
+    for i in range(1,2**r):
+        H.append(decimalToVector(i,r))
+    return H
+
+#function vectorToDecimal
+#input: v, a binary vector
+#output: t, the decimal representation of v
+def vectorToDecimal(v):
+    t=0
+    L = len(v)
+    for i in range(0,L):
+        t+= v[i]*2**(L-i-1)
+    return t
+
+#function message
+#input: a, a binary vector of any positive length
+#output: m, a binary vector of length 2^r - r - 1
 def message(a):
     L = len(a)
     r=2
@@ -62,18 +84,24 @@ def message(a):
     while len(m) < k:
         m.append(0)
 
-    print(r)
     return m
 
+#function hammingEncoder
+#input: m, a binary vector of length 2^r - r - 1
+#output: c, a codeword binary vector of length 2^r -1
 def hammingEncoder(m):
     r =2
     L= len(m)
-    c =[]
+    
     while 2**r-r-1 != L:
         r+=1
         if 2**r-r-1 > L:
-            return c
+            return []
+        
     G = hammingGeneratorMatrix(r)
+    
+    c =[]
+    
     for j in range(0,2**r-1):
         t=0
         for i in range(0,L):
@@ -82,19 +110,102 @@ def hammingEncoder(m):
 
     return c
 
+#function hammingDecoder
+#input: v, a binary vector of length 2^r - 1
+#output: c, a codeword binary vector of length 2^r - 1
+def hammingDecoder(v):
+    r=2
+    L= len(v)
 
+    while 2**r-1 != L:
+        r+=1
+        if 2**r-1 > L:
+            return []
+        
+    H = parityCheckMatrixGenerator(r)
+
+    
+    c=v
+    
+    while True: #method 2 - local search
+        z=[]
+        i=0
+        for j in range(0,r):
+            t=0
+            for k in range(0,L):
+                t += H[k][j]*c[k]
+            z.append(t%2)
+        if sum(z) == 0:
+            break
+        elif i == L:
+            return
+        else:
+            c=v
+            c[i] = (c[i] + 1) % 2
+        i+=1
+
+    return c
+
+#function messageFromCodeword
+#input: c, a codeword binary vector of length 2^r - 1
+#output: m, a binary vector of length 2^r - r - 1
+def messageFromCodeword(c):
+    r=2
+    L=len(c)
+    while 2**r-1 != L:
+        r+=1
+        if 2**r-1 > L:
+            return []
+        
+    m=c
+    
+    for i in range(0,r):
+        del m[2**i-1]
+        
+    return m
+
+#function dataFromMessage
+#input: m, a binary vector of length 2^r - r - 1
+#output: a, a binary vector of any length - raw data
+def dataFromMessage(m):
+    r=2
+    L=len(m)
+    
+    while 2**r -r-1 != L:
+        r+=1
+        if 2**r -r -1 > L:
+            return []
+    d=0
+    i=1
+    
+    while True:
+        d = vectorToDecimal(m[:i])
+        if d+i > L:
+            return []
+        if sum(m[i+d:]) == 0:
+            break
+        i+=1
+        
+    a = m[i:i+d]
+
+    return a
+        
 def repetitionEncoder(m,n):
     if type(m) != list:
         return
+    
     if type(n) != int:
         return
+    
     if len(m) != 1:
         return
+    
     return m*n
 
 def repetitionDecoder(v):
     k = sum(v)
     P = (len(v)+1) //2
+    
     if k < P:
         return [0]
     elif k > P:
