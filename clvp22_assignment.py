@@ -237,6 +237,9 @@ def repetitionEncoder(m,n):
     return m*n
 
 def repetitionDecoder(v):
+     if type(v) != list:
+        return []
+    
     k = sum(v)
     P = len(v)/2
     
