@@ -1,4 +1,5 @@
 import copy
+#uses copy
 
 #function HammingG
 #input: a number r
@@ -155,25 +156,30 @@ def hammingDecoder(v):
             return []
         
     H = parityCheckMatrixGenerator(r)
-
-    c=copy.deepcopy(v)
-    i=0
     
-    while True: #method 2 - local search
-        z= matrixMultiplication(H,c)
+    #c=v
+    c=copy.deepcopy(v) #method 3
+    z= matrixMultiplication(H,c)
+    
+    if sum(z) != 0:
+        i=vectorToDecimal(z)-1
+        c[i] = (c[i] + 1) % 2
+    #while True: #method 2 - local search
+        
         #for j in range(0,r):
+        #    z= matrixMultiplication(H,c)
         #    t=0
          #   for k in range(0,L):
           #      t += H[k][j]*c[k]
            # z.append(t%2)
-        if sum(z) == 0:
-            break
-        elif i >= L:
-            return []
-        else:
-            c=copy.deepcopy(v)
-            c[i] = (c[i] + 1) % 2
-        i+=1
+        #if sum(z) == 0:
+            #break
+        #elif i >= L:
+         #   return []
+        #else:
+         #   c=copy.deepcopy(v)
+          #  c[i] = (c[i] + 1) % 2
+        #i+=1
 
     return c
 
