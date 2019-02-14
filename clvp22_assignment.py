@@ -197,10 +197,15 @@ def messageFromCodeword(c):
         r+=1
         if 2**r-1 > L:
             return []
-    m=copy.copy(c)
-    
-    for i in range(0,r):
-        del m[2**i-1]
+    m=[]
+
+    s={0}
+    for i in range(1,r):
+        s.add(2**i-1)
+        
+    for i in range(0,L):
+        if i not in s:
+            m.append(c[i])
         
     return m
 
@@ -243,7 +248,7 @@ def repetitionEncoder(m,n):
     return m*n
 
 def repetitionDecoder(v):
-     if type(v) != list:
+    if type(v) != list:
         return []
     
     k = sum(v)
