@@ -1,1 +1,1 @@
-CT summative - error correcting codes
+python coursework on error correcting codes
